@@ -1,0 +1,5 @@
+{
+  "name": "ScholarSync",
+  "description": "An intelligent student schedule management system connecting school portals with AI-powered announcement summarization and automated scheduling.",
+  "requestFramePermissions": []
+}
