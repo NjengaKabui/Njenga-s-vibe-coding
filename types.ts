@@ -6,6 +6,8 @@ export enum EventType {
   STUDY_BLOCK = 'STUDY_BLOCK'
 }
 
+export type UserRole = 'STUDENT' | 'TEACHER';
+
 export interface ScheduleEvent {
   id: string;
   title: string;
@@ -41,4 +43,31 @@ export interface UserStats {
   classesAttended: number;
   assignmentsPending: number;
   examreadiness: number; // 0-100
+}
+
+export interface CourseMaterial {
+  id: string;
+  title: string;
+  type: 'PDF' | 'SLIDE' | 'VIDEO' | 'DOC';
+  courseCode: string;
+  uploadDate: Date;
+  size: string;
+  url?: string;
+}
+
+export interface StudentProfile {
+  id: string;
+  name: string;
+  email: string;
+  attendance: number;
+  averageGrade: number;
+  riskLevel: 'LOW' | 'MEDIUM' | 'HIGH';
+  grades: { month: string; score: number }[];
+}
+
+export interface Course {
+  code: string;
+  name: string;
+  studentsCount: number;
+  nextClass: Date;
 }

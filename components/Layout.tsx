@@ -1,24 +1,40 @@
 import React, { useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Calendar, Bell, Settings, LogOut, Menu, X } from 'lucide-react';
+import { LayoutDashboard, Calendar, Bell, Settings, LogOut, Menu, X, BookOpen, Users, BarChart2, Briefcase } from 'lucide-react';
+import { UserRole } from '../types';
 
 interface LayoutProps {
   children: React.ReactNode;
+  userRole: UserRole;
+  onSwitchRole: () => void;
 }
 
-const Layout: React.FC<LayoutProps> = ({ children }) => {
+const Layout: React.FC<LayoutProps> = ({ children, userRole, onSwitchRole }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const location = useLocation();
 
   const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
   const closeSidebar = () => setIsSidebarOpen(false);
 
-  const navItems = [
+  const studentNavItems = [
     { name: 'Dashboard', path: '/', icon: <LayoutDashboard size={20} /> },
-    { name: 'Schedule', path: '/schedule', icon: <Calendar size={20} /> },
+    { name: 'My Schedule', path: '/schedule', icon: <Calendar size={20} /> },
+    { name: 'My Courses', path: '/courses', icon: <BookOpen size={20} /> },
+    { name: 'Performance', path: '/performance', icon: <BarChart2 size={20} /> },
     { name: 'Announcements', path: '/announcements', icon: <Bell size={20} /> },
     { name: 'Settings', path: '/settings', icon: <Settings size={20} /> },
   ];
+
+  const teacherNavItems = [
+    { name: 'Dashboard', path: '/', icon: <LayoutDashboard size={20} /> },
+    { name: 'Students', path: '/students', icon: <Users size={20} /> },
+    { name: 'Teaching Materials', path: '/courses', icon: <Briefcase size={20} /> },
+    { name: 'Assessments', path: '/schedule', icon: <Calendar size={20} /> },
+    { name: 'Announcements', path: '/announcements', icon: <Bell size={20} /> },
+    { name: 'Settings', path: '/settings', icon: <Settings size={20} /> },
+  ];
+
+  const navItems = userRole === 'STUDENT' ? studentNavItems : teacherNavItems;
 
   const getTitle = () => {
     const item = navItems.find(i => i.path === location.pathname);
@@ -51,7 +67,22 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           </button>
         </div>
 
-        <nav className="flex-1 px-4 py-6 space-y-1">
+        <div className="px-4 py-4">
+          <div className="bg-indigo-50 rounded-lg p-3 flex items-center justify-between border border-indigo-100">
+            <div>
+              <p className="text-xs font-semibold text-indigo-900 uppercase tracking-wide">Current View</p>
+              <p className="text-sm font-bold text-indigo-700">{userRole === 'STUDENT' ? 'Student Portal' : 'Teacher Portal'}</p>
+            </div>
+            <button 
+              onClick={onSwitchRole}
+              className="text-xs bg-white text-indigo-600 border border-indigo-200 px-2 py-1 rounded hover:bg-indigo-50 transition-colors"
+            >
+              Switch
+            </button>
+          </div>
+        </div>
+
+        <nav className="flex-1 px-4 py-2 space-y-1">
           {navItems.map((item) => (
             <NavLink
               key={item.name}
@@ -98,8 +129,14 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               <span className="absolute top-0 right-0 block h-2 w-2 rounded-full ring-2 ring-white bg-red-500 transform translate-x-1/2 -translate-y-1/2"></span>
               <Bell className="text-gray-500 hover:text-gray-700 cursor-pointer" size={20} />
             </div>
-            <div className="h-8 w-8 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-700 font-bold border border-indigo-200">
-              JS
+            <div className="flex items-center space-x-3 pl-4 border-l border-gray-200">
+              <div className="text-right hidden md:block">
+                <p className="text-sm font-semibold text-gray-800">{userRole === 'STUDENT' ? 'John Student' : 'Prof. Anderson'}</p>
+                <p className="text-xs text-gray-500">{userRole === 'STUDENT' ? 'Computer Science' : 'Dept. Head'}</p>
+              </div>
+              <div className="h-9 w-9 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-700 font-bold border border-indigo-200">
+                {userRole === 'STUDENT' ? 'JS' : 'PA'}
+              </div>
             </div>
           </div>
         </header>
